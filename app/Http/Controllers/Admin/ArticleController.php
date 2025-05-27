@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
@@ -43,33 +42,36 @@ class ArticleController extends Controller
 
         $validated['slug'] = Str::slug($validated['title']);
         $validated['user_id'] = auth()->id();
-
-        if (empty($validated['published_at']) && !empty($validated['is_published'])) {
+        $validated['is_published'] = $request->has('is_published');
+        if ($validated['is_published']) {
             $validated['published_at'] = now();
+        } else {
+            $validated['published_at'] = null;
         }
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
-            $imagePath = $image->storeAs('articles', $imageName, 'public');
-            if (!Storage::disk('public')->exists('articles/' . $imageName)) {
-                Log::error('Échec de l\'upload de l\'image', [
-                    'imageName' => $imageName,
-                    'imagePath' => $imagePath
-                ]);
-            } else {
-                Log::info('Image uploadée avec succès', [
-                    'imageName' => $imageName,
-                    'imagePath' => $imagePath
-                ]);
+            $folder = 'images/articles';
+            $publicPath = public_path('storage/' . $folder);
+            if (!file_exists($publicPath)) {
+                mkdir($publicPath, 0755, true);
             }
-            $validated['image'] = $imagePath;
+            $imageName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
+            $destination = $publicPath . '/' . $imageName;
+            $uploadSuccess = move_uploaded_file($image->getPathname(), $destination);
+            if ($uploadSuccess) {
+                $validated['image'] = 'images/articles/' . $imageName;
+            }
         }
 
-        Article::create($validated);
-
-        return redirect()->route('admin.articles.index')
-            ->with('success', 'Article créé avec succès.');
+        try {
+            $article = Article::create($validated);
+            return redirect()->route('admin.articles.index')
+                ->with('success', 'Article créé avec succès.');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'Une erreur est survenue lors de la création de l\'article.');
+        }
     }
 
     /**
@@ -103,6 +105,12 @@ class ArticleController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['title']);
+        $validated['is_published'] = $request->has('is_published');
+        if ($validated['is_published'] && !$article->published_at) {
+            $validated['published_at'] = now();
+        } elseif (!$validated['is_published']) {
+            $validated['published_at'] = null;
+        }
 
         if ($request->has('remove_image') && $request->remove_image) {
             if ($article->image) {
@@ -115,20 +123,17 @@ class ArticleController extends Controller
             }
 
             $image = $request->file('image');
-            $imageName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
-            $imagePath = $image->storeAs('articles', $imageName, 'public');
-            if (!Storage::disk('public')->exists('articles/' . $imageName)) {
-                Log::error('Échec de l\'upload de l\'image', [
-                    'imageName' => $imageName,
-                    'imagePath' => $imagePath
-                ]);
-            } else {
-                Log::info('Image uploadée avec succès', [
-                    'imageName' => $imageName,
-                    'imagePath' => $imagePath
-                ]);
+            $folder = 'images/articles';
+            $publicPath = public_path('storage/' . $folder);
+            if (!file_exists($publicPath)) {
+                mkdir($publicPath, 0755, true);
             }
-            $validated['image'] = $imagePath;
+            $imageName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $image->getClientOriginalName());
+            $destination = $publicPath . '/' . $imageName;
+            $uploadSuccess = move_uploaded_file($image->getPathname(), $destination);
+            if ($uploadSuccess) {
+                $validated['image'] = 'images/articles/' . $imageName;
+            }
         }
 
         $article->update($validated);

@@ -184,27 +184,13 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 Route::middleware(['auth'])->group(function () {
     // Redirection vers le dashboard approprié selon le rôle
     Route::get('/dashboard', function () {
-        if (auth()->user()->isAdmin() || auth()->user()->isStaff()) {
+        $user = Auth::user();
+        if ($user->isAdmin() || $user->isStaff()) {
             return redirect()->route('admin.dashboard');
         } else {
             return redirect()->route('client.dashboard');
         }
     })->name('dashboard');
-});
-
-/*
-    |--------------------------------------------------------------------------
-    | GESTION DES ARTICLES
-    |--------------------------------------------------------------------------
-    */
-Route::prefix('articles')->name('admin.articles.')->group(function () {
-    Route::get('/', [ArticleController::class, 'index'])->name('index');
-    Route::get('/create', [ArticleController::class, 'create'])->name('create');
-    Route::post('/', [ArticleController::class, 'store'])->name('store');
-    Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit');
-    Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
-    Route::delete('/{article}', [ArticleController::class, 'destroy'])->name('destroy');
-    Route::post('/{article}/toggle-publish', [ArticleController::class, 'togglePublish'])->name('toggle-publish');
 });
 
 /*
@@ -214,34 +200,27 @@ Route::prefix('articles')->name('admin.articles.')->group(function () {
 */
 
 // Dashboard et pages principales
-Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard admin
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Gestion des projets avec timer
-    Route::get('/projects-timer', [DashboardController::class, 'projectsTimer'])->name('admin.projects.timer');
+    Route::get('/projects-timer', [DashboardController::class, 'projectsTimer'])->name('projects.timer');
 
     /*
     |--------------------------------------------------------------------------
     | GESTION DES ARTICLES
     |--------------------------------------------------------------------------
     */
-    Route::prefix('articles')->name('admin.articles.')->group(function () {
-        Route::get('/', [ArticleController::class, 'index'])->name('index');
-        Route::get('/create', [ArticleController::class, 'create'])->name('create');
-        Route::post('/', [ArticleController::class, 'store'])->name('store');
-        Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit');
-        Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
-        Route::delete('/{article}', [ArticleController::class, 'destroy'])->name('destroy');
-        Route::post('/{article}/toggle-publish', [ArticleController::class, 'togglePublish'])->name('toggle-publish');
-    });
+    Route::resource('articles', ArticleController::class);
+    Route::post('articles/{article}/toggle-publish', [ArticleController::class, 'togglePublish'])->name('articles.toggle-publish');
 
     /*
     |--------------------------------------------------------------------------
     | PROFIL ADMINISTRATEUR
     |--------------------------------------------------------------------------
     */
-    Route::prefix('profile')->name('admin.profile.')->group(function () {
+    Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/', [ProfileController::class, 'index'])->name('index');
         Route::put('/update', [ProfileController::class, 'update'])->name('update');
         Route::put('/update-password', [ProfileController::class, 'updatePassword'])->name('update-password');
@@ -253,7 +232,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | GESTION DES PROJETS
     |--------------------------------------------------------------------------
     */
-    Route::prefix('projects')->name('admin.projects.')->group(function () {
+    Route::prefix('projects')->name('projects.')->group(function () {
         Route::get('/', [ProjectController::class, 'index'])->name('index');
         Route::post('/', [ProjectController::class, 'store'])->name('store');
         Route::get('/{id}', [ProjectController::class, 'show'])->name('show');
@@ -268,7 +247,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | GESTION DES TÂCHES
     |--------------------------------------------------------------------------
     */
-    Route::prefix('tasks')->name('admin.tasks.')->group(function () {
+    Route::prefix('tasks')->name('tasks.')->group(function () {
         Route::get('/', [TaskController::class, 'index'])->name('index');
         Route::post('/', [TaskController::class, 'store'])->name('store');
         Route::get('/{id}', [TaskController::class, 'show'])->name('show');
@@ -301,7 +280,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | GESTION DES CLIENTS
     |--------------------------------------------------------------------------
     */
-    Route::prefix('clients')->name('admin.clients.')->group(function () {
+    Route::prefix('clients')->name('clients.')->group(function () {
         Route::get('/', [ClientController::class, 'index'])->name('index');
         Route::get('/create', [ClientController::class, 'create'])->name('create');
         Route::post('/', [ClientController::class, 'store'])->name('store');
@@ -316,7 +295,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | GESTION DU PORTFOLIO
     |--------------------------------------------------------------------------
     */
-    Route::prefix('portfolio')->name('admin.portfolio.')->group(function () {
+    Route::prefix('portfolio')->name('portfolio.')->group(function () {
         Route::get('/', [PortfolioController::class, 'index'])->name('index');
         Route::get('/create', [PortfolioController::class, 'create'])->name('create');
         Route::post('/', [PortfolioController::class, 'store'])->name('store');
@@ -332,7 +311,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | GESTION DES DÉPENSES
     |--------------------------------------------------------------------------
     */
-    Route::prefix('expenses')->name('admin.expenses.')->group(function () {
+    Route::prefix('expenses')->name('expenses.')->group(function () {
         Route::get('/', [ExpenseController::class, 'index'])->name('index');
         Route::get('/create', [ExpenseController::class, 'create'])->name('create');
         Route::post('/', [ExpenseController::class, 'store'])->name('store');
@@ -346,7 +325,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | GESTION DES MESSAGES DE CONTACT
     |--------------------------------------------------------------------------
     */
-    Route::prefix('contact-messages')->name('admin.contact-messages.')->group(function () {
+    Route::prefix('contact-messages')->name('contact-messages.')->group(function () {
         Route::get('/', [ContactMessageController::class, 'index'])->name('index');
         Route::get('/unread-count', [ContactMessageController::class, 'getUnreadCount'])->name('unread-count');
         Route::get('/{id}', [ContactMessageController::class, 'show'])->name('show');
@@ -361,7 +340,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | STATISTIQUES ET RAPPORTS
     |--------------------------------------------------------------------------
     */
-    Route::prefix('stats')->name('admin.stats.')->group(function () {
+    Route::prefix('stats')->name('stats.')->group(function () {
         Route::get('/', [StatsController::class, 'index'])->name('index');
         Route::post('/report', [StatsController::class, 'generateReport'])->name('report');
     });
@@ -371,7 +350,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | PARAMÈTRES
     |--------------------------------------------------------------------------
     */
-    Route::prefix('settings')->name('admin.settings.')->group(function () {
+    Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::put('/update', [SettingsController::class, 'updateAccount'])->name('update');
         Route::put('/seo', [SettingsController::class, 'updateSeo'])->name('seo');
@@ -383,7 +362,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | GESTION DES UTILISATEURS
     |--------------------------------------------------------------------------
     */
-    Route::prefix('users')->name('admin.users.')->group(function () {
+    Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/create', [UserController::class, 'create'])->name('create');
         Route::post('/', [UserController::class, 'store'])->name('store');
@@ -398,7 +377,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | GESTION DES TARIFS
     |--------------------------------------------------------------------------
     */
-    Route::prefix('pricing-plans')->name('admin.pricing-plans.')->group(function () {
+    Route::prefix('pricing-plans')->name('pricing-plans.')->group(function () {
         Route::get('/', [PricingPlanController::class, 'index'])->name('index');
         Route::get('/create', [PricingPlanController::class, 'create'])->name('create');
         Route::post('/', [PricingPlanController::class, 'store'])->name('store');
@@ -415,7 +394,7 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
     | SYSTÈME DE TICKETS / BUGTRACKER
     |--------------------------------------------------------------------------
     */
-    Route::prefix('tickets')->name('admin.tickets.')->group(function () {
+    Route::prefix('tickets')->name('tickets.')->group(function () {
         Route::get('/', [TicketController::class, 'index'])->name('index');
         Route::get('/create', [TicketController::class, 'create'])->name('create');
         Route::post('/', [TicketController::class, 'store'])->name('store');

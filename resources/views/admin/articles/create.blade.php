@@ -1,91 +1,129 @@
 @extends('admin.layout')
 
-@section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Créer un nouvel article</h3>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.articles.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
+@section('title', 'Créer un Article')
 
-                        <div class="form-group">
-                            <label for="title">Titre</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror"
-                                id="title" name="title" value="{{ old('title') }}" required>
-                            @error('title')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
+@section('page_title', 'Créer un Article')
 
-                        <div class="form-group">
-                            <label for="content">Contenu</label>
-                            <textarea class="form-control @error('content') is-invalid @enderror"
-                                id="content" name="content" rows="10" required>{{ old('content') }}</textarea>
-                            @error('content')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="image">Image</label>
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input @error('image') is-invalid @enderror"
-                                    id="image" name="image" accept="image/*">
-                                <label class="custom-file-label" for="image">Choisir une image</label>
-                            </div>
-                            <small class="form-text text-muted">
-                                Formats acceptés : JPG, JPEG, PNG, GIF. Taille maximale : 2MB
-                            </small>
-                            @error('image')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="is_published"
-                                    name="is_published" value="1" {{ old('is_published') ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="is_published">Publier immédiatement</label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Créer l'article</button>
-                            <a href="{{ route('admin.articles.index') }}" class="btn btn-secondary">Annuler</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+@section('content_body')
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="card-title">Nouvel article</h3>
+            <a href="{{ route('admin.articles.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
         </div>
     </div>
-</div>
+    <div class="card-body">
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
-@push('scripts')
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"></script>
+        <form action="{{ route('admin.articles.store') }}" method="POST" enctype="multipart/form-data" id="articleForm">
+            @csrf
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="title">Titre <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="content">Contenu <span class="text-danger">*</span></label>
+                        <textarea class="form-control tinymce-editor" id="content" name="content" rows="10">{{ old('content') }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="is_published" name="is_published" value="1" {{ old('is_published') ? 'checked' : '' }}>
+                            <label class="custom-control-label" for="is_published">Publier immédiatement</label>
+                        </div>
+                        <small class="form-text text-muted">Cochez cette case pour rendre l'article visible sur le site public.</small>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="image">Image</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="image" name="image" accept="image/*">
+                                <label class="custom-file-label" for="image">Choisir une image</label>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">Formats acceptés: JPEG, PNG, GIF. Taille max: 2MB.</small>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <div id="preview-container" class="text-center d-none">
+                            <h5>Aperçu de l'image</h5>
+                            <div id="image-preview" class="d-none">
+                                <img src="" alt="Aperçu" class="img-fluid img-thumbnail" style="max-height: 200px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12 text-right">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+
+@section('custom_js')
+<x-head.tinymce-config />
 <script>
-    tinymce.init({
-        selector: '#content',
-        height: 500,
-        plugins: [
-            'advlist autolink lists link image charmap print preview anchor',
-            'searchreplace visualblocks code fullscreen',
-            'insertdatetime media table paste code help wordcount'
-        ],
-        toolbar: 'undo redo | formatselect | bold italic backcolor | \
-                alignleft aligncenter alignright alignjustify | \
-                bullist numlist outdent indent | removeformat | help'
+    // Afficher le nom du fichier sélectionné
+    document.getElementById('image').addEventListener('change', function() {
+        var fileName = this.value.split('\\').pop();
+        this.nextElementSibling.textContent = fileName || 'Choisir une image';
+
+        // Prévisualisation de l'image
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            var previewContainer = document.getElementById('preview-container');
+            var imagePreview = document.getElementById('image-preview');
+            var previewImg = imagePreview.querySelector('img');
+
+            reader.onload = function(e) {
+                previewContainer.classList.remove('d-none');
+                imagePreview.classList.remove('d-none');
+                previewImg.src = e.target.result;
+            }
+
+            reader.readAsDataURL(this.files[0]);
+        }
     });
 
-    // Afficher le nom du fichier sélectionné
-    document.querySelector('.custom-file-input').addEventListener('change', function(e) {
-        var fileName = e.target.files[0].name;
-        var nextSibling = e.target.nextElementSibling;
-        nextSibling.innerText = fileName;
+    // Validation du formulaire
+    document.getElementById('articleForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Récupérer le contenu de TinyMCE
+        var content = tinymce.get('content').getContent();
+
+        // Vérifier si le contenu est vide
+        if (!content.trim()) {
+            alert('Le contenu est requis');
+            return;
+        }
+
+        // Si tout est valide, soumettre le formulaire
+        this.submit();
     });
 </script>
-@endpush
 @endsection

@@ -34,7 +34,7 @@
                     <h2 class="text-2xl font-bold mb-2 text-gray-800 line-clamp-2">
                         <a href="{{ route('blog.show', $article->slug) }}" class="hover:text-blue-600 transition-colors duration-300">{{ $article->title }}</a>
                     </h2>
-                    <p class="text-gray-600 mb-4 line-clamp-3 flex-1">{{ Str::limit(strip_tags($article->content), 150) }}</p>
+                    <p class="text-gray-600 mb-4 line-clamp-3 flex-1">{{ Str::limit(strip_tags(html_entity_decode($article->content)), 150) }}</p>
                     <div class="mt-auto">
                         <a href="{{ route('blog.show', $article->slug) }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-300">
                             Lire la suite
