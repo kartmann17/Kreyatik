@@ -1,34 +1,34 @@
-<?php return array (
+<?php return array(
   'model' => 'RalphJSmit\\Laravel\\SEO\\Models\\SEO',
   'site_name' => 'Kréyatik Studio - Création de sites internet modernes et performants',
   'sitemap' => '/sitemap.xml',
   'canonical_link' => true,
   'robots' =>
-  array (
+  array(
     'default' => 'max-snippet:-1,max-image-preview:large,max-video-preview:-1',
     'force_default' => false,
   ),
   'favicon' => 'favicon.ico',
   'title' =>
-  array (
+  array(
     'infer_title_from_url' => true,
     'suffix' => ' | Kréyatik Studio',
     'homepage_title' => 'Kréyatik Studio - Création de sites internet modernes et performants',
   ),
   'description' =>
-  array (
+  array(
     'fallback' => 'Kréyatik Studio conçoit des sites internet modernes, responsives et performants pour les professionnels, créateurs et entrepreneurs. Site vitrine ou e-commerce 100% sécurisé, design sur mesure, optimisation SEO et accompagnement complet dès 249€/mois.',
   ),
   'image' =>
-  array (
+  array(
     'fallback' => NULL,
   ),
   'author' =>
-  array (
+  array(
     'fallback' => NULL,
   ),
   'twitter' =>
-  array (
+  array(
     '@username' => NULL,
   ),
   'default_description' => 'Application de gestion de projets et de suivi du temps',
@@ -40,24 +40,24 @@
   'social_instagram' => NULL,
   'social_linkedin' => NULL,
   'pages' =>
-  array (
+  array(
     'home' =>
-    array (
+    array(
       'title' => 'Accueil | Votre Entreprise',
       'description' => 'Bienvenue sur notre application de gestion de projets et de suivi du temps',
     ),
     'contact' =>
-    array (
+    array(
       'title' => 'Contactez-nous | Votre Entreprise',
       'description' => 'Prenez contact avec notre équipe pour discuter de vos projets ou obtenir plus d\'informations sur nos services.',
     ),
     'offres' =>
-    array (
+    array(
       'title' => 'Nos Offres | Votre Entreprise',
       'description' => 'Découvrez nos offres et tarifs adaptés à vos besoins. Solutions sur mesure pour tous vos projets.',
     ),
     'client' =>
-    array (
+    array(
       'title' => 'Espace Client | Votre Entreprise',
       'description' => 'Accédez à votre espace client pour gérer vos projets et suivre vos demandes en cours.',
     ),

@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('admin.layout')
 
 @section('content')
 <div class="container-fluid">
@@ -34,12 +34,24 @@
                         <div class="form-group">
                             <label for="image">Image</label>
                             @if($article->image)
-                            <div class="mb-2">
+                            <div class="mb-3">
                                 <img src="{{ Storage::url($article->image) }}" alt="Image actuelle" class="img-thumbnail" style="max-height: 200px;">
+                                <div class="mt-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="remove_image" name="remove_image">
+                                        <label class="custom-control-label" for="remove_image">Supprimer l'image</label>
+                                    </div>
+                                </div>
                             </div>
                             @endif
-                            <input type="file" class="form-control-file @error('image') is-invalid @enderror"
-                                id="image" name="image">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input @error('image') is-invalid @enderror"
+                                    id="image" name="image" accept="image/*">
+                                <label class="custom-file-label" for="image">Choisir une nouvelle image</label>
+                            </div>
+                            <small class="form-text text-muted">
+                                Formats acceptés : JPG, JPEG, PNG, GIF. Taille maximale : 2MB
+                            </small>
                             @error('image')
                             <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
@@ -78,6 +90,13 @@
         toolbar: 'undo redo | formatselect | bold italic backcolor | \
                 alignleft aligncenter alignright alignjustify | \
                 bullist numlist outdent indent | removeformat | help'
+    });
+
+    // Afficher le nom du fichier sélectionné
+    document.querySelector('.custom-file-input').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        var nextSibling = e.target.nextElementSibling;
+        nextSibling.innerText = fileName;
     });
 </script>
 @endpush

@@ -317,6 +317,22 @@ return [
             'icon' => 'fas fa-tachometer-alt',
         ],
         [
+            'text' => 'Blog',
+            'icon' => 'fas fa-blog',
+            'submenu' => [
+                [
+                    'text' => 'Liste des articles',
+                    'url' => 'admin/articles',
+                    'icon' => 'fas fa-list',
+                ],
+                [
+                    'text' => 'Nouvel article',
+                    'url' => 'admin/articles/create',
+                    'icon' => 'fas fa-plus',
+                ],
+            ],
+        ],
+        [
             'text' => 'Clients',
             'url' => 'admin/clients',
             'icon' => 'fas fa-users',
@@ -375,7 +391,7 @@ return [
             'text' => 'Utilisateurs',
             'url' => 'admin/users',
             'icon' => 'fas fa-user-cog',
-            
+
         ],
         [
             'text' => 'Paramètres',

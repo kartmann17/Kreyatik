@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NosOffresController;
+use App\Http\Controllers\BlogController;
 
 // Contrôleurs d'administration
 use App\Http\Controllers\Admin\DashboardController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Admin\PricingPlanController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ArticleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +103,10 @@ Route::get('/confidentialite', function () {
 
 // Pages statiques
 Route::get('/NosOffres', [NosOffresController::class, 'index'])->name('nos-offres');
+
+// Blog public
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
+Route::get('/blog/{article:slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/ConditionTarifaire', function () {
     $seo = new \RalphJSmit\Laravel\SEO\Support\SEOData(
@@ -187,6 +193,21 @@ Route::middleware(['auth'])->group(function () {
 });
 
 /*
+    |--------------------------------------------------------------------------
+    | GESTION DES ARTICLES
+    |--------------------------------------------------------------------------
+    */
+Route::prefix('articles')->name('admin.articles.')->group(function () {
+    Route::get('/', [ArticleController::class, 'index'])->name('index');
+    Route::get('/create', [ArticleController::class, 'create'])->name('create');
+    Route::post('/', [ArticleController::class, 'store'])->name('store');
+    Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit');
+    Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
+    Route::delete('/{article}', [ArticleController::class, 'destroy'])->name('destroy');
+    Route::post('/{article}/toggle-publish', [ArticleController::class, 'togglePublish'])->name('toggle-publish');
+});
+
+/*
 |--------------------------------------------------------------------------
 | ROUTES D'ADMINISTRATION (protégées par auth)
 |--------------------------------------------------------------------------
@@ -199,6 +220,21 @@ Route::middleware(['auth', 'role:admin,staff'])->prefix('admin')->group(function
 
     // Gestion des projets avec timer
     Route::get('/projects-timer', [DashboardController::class, 'projectsTimer'])->name('admin.projects.timer');
+
+    /*
+    |--------------------------------------------------------------------------
+    | GESTION DES ARTICLES
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('articles')->name('admin.articles.')->group(function () {
+        Route::get('/', [ArticleController::class, 'index'])->name('index');
+        Route::get('/create', [ArticleController::class, 'create'])->name('create');
+        Route::post('/', [ArticleController::class, 'store'])->name('store');
+        Route::get('/{article}/edit', [ArticleController::class, 'edit'])->name('edit');
+        Route::put('/{article}', [ArticleController::class, 'update'])->name('update');
+        Route::delete('/{article}', [ArticleController::class, 'destroy'])->name('destroy');
+        Route::post('/{article}/toggle-publish', [ArticleController::class, 'togglePublish'])->name('toggle-publish');
+    });
 
     /*
     |--------------------------------------------------------------------------

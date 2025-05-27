@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('admin.layout')
 
 @section('content')
 <div class="container-fluid">
@@ -32,8 +32,14 @@
 
                         <div class="form-group">
                             <label for="image">Image</label>
-                            <input type="file" class="form-control-file @error('image') is-invalid @enderror"
-                                id="image" name="image">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input @error('image') is-invalid @enderror"
+                                    id="image" name="image" accept="image/*">
+                                <label class="custom-file-label" for="image">Choisir une image</label>
+                            </div>
+                            <small class="form-text text-muted">
+                                Formats acceptés : JPG, JPEG, PNG, GIF. Taille maximale : 2MB
+                            </small>
                             @error('image')
                             <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
@@ -72,6 +78,13 @@
         toolbar: 'undo redo | formatselect | bold italic backcolor | \
                 alignleft aligncenter alignright alignjustify | \
                 bullist numlist outdent indent | removeformat | help'
+    });
+
+    // Afficher le nom du fichier sélectionné
+    document.querySelector('.custom-file-input').addEventListener('change', function(e) {
+        var fileName = e.target.files[0].name;
+        var nextSibling = e.target.nextElementSibling;
+        nextSibling.innerText = fileName;
     });
 </script>
 @endpush

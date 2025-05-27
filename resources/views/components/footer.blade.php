@@ -20,14 +20,17 @@
                     <li><a href="/confidentialite" class="hover:text-primary transition">Confidentialité</a></li>
                     <li><a href="/MentionLegal" class="hover:text-primary transition">Mentions légales</a></li>
                 </ul>
+                 <ul class="space-y-1 text-center md:text-left text-sm">
+                    <li><a href="/blog" class="hover:text-primary transition">Blog</a></li>
+                </ul>
             </div>
             <!-- Bloc 3 : Réseaux sociaux -->
             <div class="flex-1 flex flex-col items-center">
                 <span class="font-semibold mb-2">Suivez-nous</span>
                 <div class="flex space-x-4 gap-3">
-                    <a href="#" aria-label="Facebook" class="hover:scale-110 transition">
+                    {{-- <a href="#" aria-label="Facebook" class="hover:scale-110 transition">
                         <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#1877F2"/><path d="M21 16.5h-3v8h-3v-8h-2v-3h2v-2c0-2.2 1.3-3.5 3.3-3.5.9 0 1.7.1 1.7.1v2h-1.2c-1 0-1.3.5-1.3 1.2v1.7h2.5l-.3 3z" fill="#fff"/></svg>
-                    </a>
+                    </a> --}}
                     <a href="https://www.instagram.com/kreyatik_17/?igsh=MXFqYXBxd2FqZ21pcg%3D%3D&utm_source=qr#" aria-label="Instagram" class="hover:scale-110 transition" target="_blank">
                         <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#E1306C"/><rect x="10" y="10" width="12" height="12" rx="4" fill="#fff"/><circle cx="16" cy="16" r="3" fill="#E1306C"/><circle cx="21" cy="11" r="1" fill="#E1306C"/></svg>
                     </a>
