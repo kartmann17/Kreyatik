@@ -33,8 +33,8 @@ Application de gestion interne développée pour Kréyatik Studio. Cette platefo
 ### Cloner le dépôt
 
 ```bash
-git clone https://github.com/LaurentP-56/lionel.git
-cd lionel-app
+git clone https://github.com/kartmann17/Kreyatik.git
+cd Kreyatik-app
 ```
 
 ### Installer les dépendances
@@ -209,7 +209,7 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 ## 🔐 Sécurité
 
-Si vous découvrez une faille de sécurité, veuillez envoyer un email à [laurentbwa@gmail.com](mailto:laurentbwa@gmail.com).
+Si vous découvrez une faille de sécurité, veuillez envoyer un email à [kreyatik@gmail.com](mailto:kreyatikb@gmail.com).
 
 ## 📞 Contact
 
